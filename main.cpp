@@ -47,7 +47,7 @@ void onChange()
                     History::singleton()->append(str0,str1,str2);
                 }
                 // showMessage
-                if (s_tray) s_tray->showMessage("剪贴板变化: " + str0,str0, QSystemTrayIcon::Information,1000);
+                if (s_tray) s_tray->showMessage("剪贴板变化: " + str0,str0, QSystemTrayIcon::Information,3000);
                 // SOqDebugCKET
                 if (s_helper && !s_helper->s_socketlist.isEmpty()) {
                     Q_FOREACH(QTcpSocket* socket, s_helper->s_socketlist) {
@@ -132,6 +132,7 @@ void onNewConnection()
 //    QObject::connect(socket, &QTcpSocket::disconnected, &onDisconnected);
     QObject::connect(socket, &QTcpSocket::connected, s_helper, &Helper::onConnected);
     QObject::connect(socket, &QTcpSocket::disconnected, s_helper, &Helper::onDisconnected);
+    QObject::connect(socket, &QTcpSocket::readyRead, s_helper, &Helper::onReadyRead);
 
     qDebug() << "append " << 1 << "socket";
     qDebug() << "current socket: "<< s_helper->s_socketlist.size();
@@ -201,7 +202,7 @@ int main(int argc, char *argv[])
     QTcpServer* tcpserver = new QTcpServer;
     s_tcpserver = tcpserver;
     bool listen_satus =  tcpserver->listen(QHostAddress::Any, 11011);
-    Helper* helper = new Helper;
+    Helper* helper = new Helper(0,tray);
     s_helper = helper;
     QObject::connect(tcpserver, &QTcpServer::newConnection, &onNewConnection);
     if (!listen_satus) {

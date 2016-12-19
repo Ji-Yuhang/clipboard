@@ -1,6 +1,6 @@
 #include "helper.h"
 #include <QDebug>
-Helper::Helper(QObject *parent) : QObject(parent)
+Helper::Helper(QObject *parent, QSystemTrayIcon *tray) : QObject(parent),tray_(tray)
 {
 
 }
@@ -27,4 +27,15 @@ void  Helper::onDisconnected()
     int number = s_socketlist.removeAll(socket);
     qDebug() << "remove " << number << "socket";
     qDebug() << "current socket: "<< s_socketlist.size();
+}
+
+void Helper::onReadyRead()
+{
+    qDebug() << "helper onDisconnected";
+
+    QTcpSocket* socket = qobject_cast<QTcpSocket*>(QObject::sender());
+    if (!socket ) return;
+    QString str = socket->readAll();
+    if (tray_) tray_->showMessage("剪贴板callback: ",str, QSystemTrayIcon::Information,3000);
+
 }
