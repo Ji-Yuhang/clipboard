@@ -35,7 +35,7 @@ void Helper::onReadyRead()
 
     QTcpSocket* socket = qobject_cast<QTcpSocket*>(QObject::sender());
     if (!socket ) return;
-    QString str = socket->readAll();
-    if (tray_) tray_->showMessage("剪贴板callback: ",str, QSystemTrayIcon::Information,3000);
+    QString str = socket->readAll().trimmed();
+    if (tray_ && !str.isEmpty()) tray_->showMessage("剪贴板callback: ",str, QSystemTrayIcon::Information, 2000);
 
 }

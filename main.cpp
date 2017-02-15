@@ -27,6 +27,8 @@ static Helper* s_helper = NULL;
 static bool s_is_notify = true;
 static QSystemTrayIcon* s_tray = NULL;
 //History* s_history = NULL;
+#include <QJsonDocument>
+#include <QJsonObject>
 void onChange()
 {
     QClipboard *board = QApplication::clipboard();
@@ -47,19 +49,50 @@ void onChange()
                     History::singleton()->append(str0,str1,str2);
                 }
                 // showMessage
-                if (s_tray) s_tray->showMessage("剪贴板变化: " + str0,str0, QSystemTrayIcon::Information,3000);
+                if (s_tray) s_tray->showMessage("剪贴板变化: " + str0,str0, QSystemTrayIcon::Information, 500);
                 // SOqDebugCKET
+//                if (s_helper && !s_helper->s_socketlist.isEmpty()) {
+//                    Q_FOREACH(QTcpSocket* socket, s_helper->s_socketlist) {
+//                        if (socket && socket->isWritable()) {
+//                            socket->write(str0.toUtf8() + "\n");
+//                            socket->flush();
+//                        }
+//                    }
+//                }
+
+
+
+
+            }
+
+            {
+                // json
+                QJsonObject json;
+                json.insert("Clipboard", str0);
+                json.insert("Selection", str1);
+                json.insert("FindBuffer", str2);
+                QString changed;
+                if (last_str0_ != str0 )
+                    changed = "Clipboard";
+                if (last_str1_ != str1 )
+                    changed = "Selection";
+                if (last_str2_ != str2)
+                    changed = "FindBuffer";
+                json.insert("changed",changed);
+
+                QJsonDocument document;
+                document.setObject(json);
+                QByteArray byte_array = document.toJson(QJsonDocument::Compact);
+                QString json_str(byte_array);
+
                 if (s_helper && !s_helper->s_socketlist.isEmpty()) {
                     Q_FOREACH(QTcpSocket* socket, s_helper->s_socketlist) {
                         if (socket && socket->isWritable()) {
-                            socket->write(str0.toUtf8() + "\n");
+                            socket->write(json_str.toUtf8() + "\n");
                             socket->flush();
                         }
                     }
                 }
-
-
-
 
             }
             // system call

@@ -2,8 +2,10 @@
 require 'socket'
 require "open-uri"
 require "json"
+require 'uri'
 
 fork do
+#loop do
 
   path = ENV["HOME"] + "/vimrc/shanbay.rb"
   s = TCPSocket.new 'localhost', 11011
@@ -11,10 +13,28 @@ fork do
   while line = s.gets # Read lines from socket
     begin
       #puts line         # and print them
-      word = line.chomp
+      text = line.chomp
+      puts text
+      json = JSON.parse text
+      puts json
+      selected = json["changed"]
+      #word = json[selected]
+      word = json.values_at(selected).first
+      clipoboard = json["Clipboard"]
+      selection = json["Selection"]
+      findbuffer = json["FindBuffer"]
+      puts word
+      puts "scan begin"
+      if word.scan(/[\w-]+/).empty?
+        puts "raise error word"
+        raise 'Error Word'
+      end
+      word = word.scan(/[\w-]+/).first
+      puts word
+      puts "scan end"
 
       if !File.exist?(path)
-        getwordui = "https://api.shanbay.com/bdc/search/?word=#{word}"
+        getwordui = URI.escape("https://api.shanbay.com/bdc/search/?word=#{word}")
         open( getwordui) do |io|
           jsonstr =  io.read
           json = JSON.parse(jsonstr)
@@ -38,6 +58,7 @@ fork do
       end
 
     rescue
+      puts "rescue word"
     end
   end
 
