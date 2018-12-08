@@ -30,4 +30,5 @@ RESOURCES += \
 ICON = clipboard.icns
 
 DISTFILES += \
-    clipboard.icns
+    clipboard.icns \
+    clipboard.rc
