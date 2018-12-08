@@ -4,7 +4,7 @@ require "open-uri"
 require "json"
 require 'uri'
 
-fork do
+# fork do
 #loop do
 
   path = ENV["HOME"] + "/vimrc/shanbay.rb"
@@ -53,7 +53,7 @@ fork do
       else
         
         command = path + " " + word
-        data = `#{command}`
+        data = `ruby #{command}`
         s.puts data
       end
 
@@ -63,4 +63,4 @@ fork do
   end
 
   s.close             # close socket when done
-end
+# end

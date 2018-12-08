@@ -97,6 +97,9 @@ void onChange()
             }
             // system call
             QString call_back_path = QDir::homePath() + QDir::separator()+".clipboard_callback";
+#ifdef Q_OS_WIN
+            call_back_path += ".cmd";
+#endif
             if (QFile::exists(call_back_path)) {
                 QStringList args;
                 args << str0 << str1 << str2;
@@ -198,7 +201,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QCoreApplication::setOrganizationName("Ji-Yuhang");
-    QCoreApplication::setOrganizationDomain("iamyuhang.com");
+    QCoreApplication::setOrganizationDomain("memorysheep.com");
     QCoreApplication::setApplicationName("clipboard");
     a.setWindowIcon(QIcon(":/ico/qt_128px_1174036_easyicon.net.ico"));
     a.setQuitOnLastWindowClosed(false);
