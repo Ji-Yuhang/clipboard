@@ -101,12 +101,15 @@ void onChange()
             call_back_path += ".cmd";
 #endif
 
-	    //s_tray->showMessage(QString("call_back_path") + call_back_path, "");
+	        // s_tray->showMessage(QString("call_back_path") + call_back_path + (QFile::exists(call_back_path) ? "exists": "not found") , "");
             if (QFile::exists(call_back_path)) {
                 QStringList args;
                 args << str0 << str1 << str2;
-                bool is_callback = QProcess::startDetached(call_back_path, args );
-		//s_tray->showMessage(QString("system call ~/.clipboard_callback ") + (is_callback ? "true" : "false"), "");
+                bool is_callback = QProcess::startDetached(call_back_path, args, QDir::homePath() );
+                if (!is_callback){
+                     s_tray->showMessage(QString("system call ~/.clipboard_callback ") + (is_callback ? "true" : "false"), "");
+                }
+		        // s_tray->showMessage(QString("system call ~/.clipboard_callback ") + (is_callback ? "true" : "false"), "");
                 qDebug() << "system call ~/.clipboard_callback "<< is_callback;
 
             }
