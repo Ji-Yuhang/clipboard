@@ -1,5 +1,11 @@
+
 *.user
 *.obj
 build
 build-*
 .vscode
+*.o
+.qmake.stash
+Makefile
+clipboard
+nohup.out

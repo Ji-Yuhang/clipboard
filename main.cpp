@@ -49,7 +49,7 @@ void onChange()
                     History::singleton()->append(str0,str1,str2);
                 }
                 // showMessage
-//                if (s_tray) s_tray->showMessage("剪贴板变化: " + str0,str0, QSystemTrayIcon::Information, 500);
+                //if (s_tray) s_tray->showMessage(QString("剪贴板变化: ") + str0,str0, QSystemTrayIcon::Information, 500);
                 // SOqDebugCKET
 //                if (s_helper && !s_helper->s_socketlist.isEmpty()) {
 //                    Q_FOREACH(QTcpSocket* socket, s_helper->s_socketlist) {
@@ -100,10 +100,13 @@ void onChange()
 #ifdef Q_OS_WIN
             call_back_path += ".cmd";
 #endif
+
+	    //s_tray->showMessage(QString("call_back_path") + call_back_path, "");
             if (QFile::exists(call_back_path)) {
                 QStringList args;
                 args << str0 << str1 << str2;
                 bool is_callback = QProcess::startDetached(call_back_path, args );
+		//s_tray->showMessage(QString("system call ~/.clipboard_callback ") + (is_callback ? "true" : "false"), "");
                 qDebug() << "system call ~/.clipboard_callback "<< is_callback;
 
             }
