@@ -6,7 +6,7 @@ find_buffer = ARGV[2]
 
 def http_post( clipboard, selection, find_buffer) 
     path = "http://127.0.0.1:7001/ping"
-    rc = RestClient.get path
+    rc = RestClient.get path, params:{clipboard: clipboard, selection: selection, find_buffer: find_buffer}
     puts rc
 end
 
